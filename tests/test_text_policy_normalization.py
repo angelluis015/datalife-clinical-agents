@@ -1,4 +1,5 @@
-import unittest, json
+import unittest
+import json
 from pathlib import Path
 
 
@@ -49,3 +50,23 @@ class TestTextPolicyNormalization(unittest.TestCase):
             with self.subTest(name=case["name"]):
                 actual = normalize_for_policy_match(case["input"])
                 self.assertEqual(actual, case["expected"])
+
+    def test_input_at_exact_limit(self):
+        self.assertEqual(normalize_for_policy_match("A"*10_000),"a"*10_000)
+
+    def test_output_at_exact_limit(self):
+        text = "ﬃ" * 3_333 + "A"
+        self.assertEqual(normalize_for_policy_match(text),"ffi" * 3_333 + "a")
+
+    def test_zero_width_space_between_spaces(self):
+        self.assertEqual(
+            normalize_for_policy_match("hello \u200b world"),
+            "hello world"
+        )
+
+def test_idempotence_unicode_range(self):
+    for codepoint in range(0x1000):
+        text = chr(codepoint)
+        once = normalize_for_policy_match(text)
+        twice = normalize_for_policy_match(once)
+        self.assertEqual(once, twice, msg = f"Failed at U+{codepoint:04X}")

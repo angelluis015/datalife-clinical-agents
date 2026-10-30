@@ -11,13 +11,13 @@ It does not perform clinical decisions, detect personally identifiable informati
 The function applies the following operations:
 
 1. Validate that the input is a string.
-2. Reject inputs exceeding 10,000 Unicode code points.
+2. Reject inputs longer than 10,000 characters.
 3. Apply Unicode NFKC normalization.
-4. Apply Unicode case folding using `str.casefold()`.
-5. Normalize whitespace using `split()` and `" ".join()`.
-6. Remove `U+200B` (ZERO WIDTH SPACE).
-7. Reject normalized outputs exceeding 10,000 Unicode code points.
-8. Return the normalized string.
+4. Apply Unicode case folding using `casefold()`.
+5. Remove U+200B (ZERO WIDTH SPACE).
+6. Collapse whitespace using `split()` and `" ".join()`.
+7. Reject normalized outputs longer than 10,000 characters.
+8. Return the normalized text.
 
 ## Zero-Width Character Policy
 
