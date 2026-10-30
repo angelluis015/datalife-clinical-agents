@@ -1,0 +1,27 @@
+[
+  {
+    "name": "fullwidth_and_casefold",
+    "input": "ＨＥＬＬＯ",
+    "expected": "hello"
+  },
+  {
+    "name": "whitespace",
+    "input": "  HELLO    WORLD  ",
+    "expected": "hello world"
+  },
+  {
+    "name": "zero_width_space",
+    "input": "he\u200bllo",
+    "expected": "hello"
+  },
+  {
+    "name": "preserve_zero_width_joiner",
+    "input": "hello\u200dworld",
+    "expected": "hello\u200dworld"
+  },
+  {
+    "name": "greek_sigma",
+    "input": "\u03f9",
+    "expected": "\u03c3"
+  }
+]

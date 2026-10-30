@@ -1,4 +1,5 @@
-import unittest
+import unittest, json
+from pathlib import Path
 
 
 from tools.text_policy_normalization import normalize_for_policy_match
@@ -10,3 +11,41 @@ class TestTextPolicyNormalization(unittest.TestCase):
 
     def test_paragraph_whitespace(self):
         self.assertEqual(normalize_for_policy_match("  THE PATIENT    reports a HEADACHE.\nFollow-up is   scheduled for MONDAY.  "),"the patient reports a headache. follow-up is scheduled for monday.")
+
+    def test_zero_width_space(self):
+        self.assertEqual(normalize_for_policy_match(" he\u200bllO "),"hello")
+
+    def test_preserves_zero_width_joiner(self):
+        self.assertEqual(normalize_for_policy_match("hello\u200dworld"),"hello\u200dworld")
+
+    def test_invalid_input_type(self):
+        with self.assertRaises(TypeError):
+            normalize_for_policy_match(234)
+
+    def test_input_over_limit(self):
+        with self.assertRaises(ValueError):
+            normalize_for_policy_match("A"*10_001)
+
+    def test_output_over_limit(self):
+        with self.assertRaises(ValueError):
+            normalize_for_policy_match("ﬃ"*4_000)
+
+    def test_idempotent(self):
+        original = "  ＨＥＬＬＯ\u200b   WORLD  "
+        once = normalize_for_policy_match(original)
+        twice = normalize_for_policy_match(once)
+        self.assertEqual(once, twice)
+
+    def test_greek_sigma_normalization(self):
+        self.assertEqual(normalize_for_policy_match("\u03f9"),"\u03c3")
+
+    def test_unicode_boundary_fixtures(self):
+        fixture_path = Path(__file__).parent / "fixtures" / "unicode_boundary_cases.json"
+
+        with fixture_path.open(encoding="utf-8") as file:
+            cases = json.load(file)
+
+        for case in cases:
+            with self.subTest(name=case["name"]):
+                actual = normalize_for_policy_match(case["input"])
+                self.assertEqual(actual, case["expected"])
