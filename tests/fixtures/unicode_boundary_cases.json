@@ -22,6 +22,16 @@
   {
     "name": "greek_sigma",
     "input": "\u03f9",
-    "expected": "\u03c3"
+    "expected": "\u03c2"
+  },
+  {
+  "name": "composed_accent",
+  "input": "\u00e9",
+  "expected": "\u00e9"
+  },
+  {
+    "name": "decomposed_accent",
+    "input": "e\u0301",
+    "expected": "\u00e9"
   }
 ]

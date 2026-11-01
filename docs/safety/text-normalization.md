@@ -12,8 +12,8 @@ The function applies the following operations:
 
 1. Validate that the input is a string.
 2. Reject inputs longer than 10,000 characters.
-3. Apply Unicode NFKC normalization.
-4. Apply Unicode case folding using `casefold()`.
+3. Apply Unicode case folding using `casefold()`
+4. Apply Unicode NFKC normalization.
 5. Remove U+200B (ZERO WIDTH SPACE).
 6. Collapse whitespace using `split()` and `" ".join()`.
 7. Reject normalized outputs longer than 10,000 characters.
@@ -35,7 +35,7 @@ This narrow policy avoids indiscriminately deleting characters that may have lin
 - Error messages do not include the input text.
 - NFKC normalization can change compatibility distinctions, so the normalized representation must not replace the original clinical text.
 - The output limit is checked after normalization; intermediate allocations are not separately bounded.
-- The implementation has not been proven idempotent for every possible Unicode input.
+- Normalization uses a single `casefold()` → NFKC pass for predictable runtime and bounded processing. Certain Unicode code points (such as U+037A and U+03F9) may require multiple passes to stabilize, so universal idempotence is not guaranteed.
 
 ## Testing
 
